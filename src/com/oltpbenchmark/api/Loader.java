@@ -18,6 +18,7 @@
 package com.oltpbenchmark.api;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
@@ -50,7 +51,7 @@ public abstract class Loader<T extends BenchmarkModule> {
      * Note that each LoaderThread has its own databsae Connection handle.
      */
     public abstract class LoaderThread implements Runnable {
-        private final Connection conn;
+        private  Connection conn;
         
         public LoaderThread() throws SQLException {
             this.conn = Loader.this.benchmark.makeConnection();
@@ -60,6 +61,13 @@ public abstract class Loader<T extends BenchmarkModule> {
         @Override
         public final void run() {
             try {
+                if (!this.conn.isValid(10)) {
+                    this.conn = DriverManager.getConnection(
+                            workConf.getDBConnection(),
+                            workConf.getDBUsername(),
+                            workConf.getDBPassword());
+                    this.conn.setAutoCommit(false);
+                }
                 this.load(this.conn);
                 this.conn.commit();
             } catch (SQLException ex) {
