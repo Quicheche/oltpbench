@@ -17,6 +17,18 @@ CREATE INDEX IDX_WP_LOGINKEY ON wp_users (user_login);
 CREATE INDEX IDEX_WP_NICKNAME ON wp_users (user_nickname);
 CREATE INDEX IDX_WP_EMAIL ON wp_users (user_email);
 
+DROP TABLE IF EXISTS wp_usermeta;
+CREATE TABLE wp_usermeta (
+  umeta_id bigint(20)  NOT NULL AUTO_INCREMENT,
+  user_id bigint(20)  NOT NULL DEFAULT '0',
+  meta_key varchar(255)  DEFAULT NULL,
+  meta_value longtext ,
+  PRIMARY KEY (umeta_id)
+) ;
+CREATE INDEX IDX_WP_USERMETA_ID ON wp_usermeta (user_id);
+CREATE INDEX IDX_WP_USERMETA_METAVAL ON wp_usermeta (umeta_id);
+
+
 DROP TABLE IF EXISTS wp_posts;
 CREATE TABLE wp_posts (
   ID bigint(20)  NOT NULL AUTO_INCREMENT,
@@ -72,3 +84,49 @@ CREATE INDEX IDX_COMMENT_APPROVED_DATEDMT ON wp_comments (comment_approved, comm
 CREATE INDEX IDX_COMMENT_DATA_GMT ON wp_comments (comment_parent);
 CREATE INDEX IDX_COMMENT_PARENT ON wp_comments (comment_date_gmt);
 CREATE INDEX IDX_COMMENT_AUTHOR_EMAIL ON wp_comments (comment_author_email);
+
+DROP TABLE IF EXISTS wp_term_relationships
+CREATE TABLE wp_term_relationships (
+  object_id bigint(20)  NOT NULL DEFAULT '0',
+  term_taxonomy_id bigint(20)  NOT NULL DEFAULT '0',
+  term_order int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (object_id,term_taxonomy_id),
+);
+
+CREATE INDEX IDX_TERMRELATIOHSHIP_ID ON wp_term_relationships (term_taxonomy_id);
+
+DROP TABLE IF EXISTS wp_term_taxonomy;
+CREATE TABLE wp_term_taxonomy (
+  term_taxonomy_id bigint(20)  NOT NULL AUTO_INCREMENT,
+  term_id bigint(20)  NOT NULL DEFAULT '0',
+  taxonomy varchar(32) NOT NULL DEFAULT '',
+  description longtext  NOT NULL,
+  parent bigint(20)  NOT NULL DEFAULT '0',
+  count bigint(20) NOT NULL DEFAULT '0',
+  PRIMARY KEY (term_taxonomy_id),
+  UNIQUE KEY  (term_id, taxonomy),
+);
+CREATE INDEX IDX_TAXONOMY ON wp_term_taxonomy (taxonomy);
+
+
+DROP TABLE IF EXISTS wp_termmeta;
+CREATE TABLE wp_termmeta (
+  meta_id bigint(20)  NOT NULL AUTO_INCREMENT,
+  term_id bigint(20)  NOT NULL DEFAULT '0',
+  meta_key varchar(255)  DEFAULT NULL,
+  meta_value longtext ,
+  PRIMARY KEY (meta_id)
+);
+CREATE INDEX IDX_TERMMETA_ID ON wp_termmeta (term_id);
+CREATE INDEX IDX_TERMMETA_KEY ON wp_termmeta (meta_key);
+
+DROP TABLE IF EXISTS wp_terms;
+CREATE TABLE wp_terms (
+  term_id bigint(20)  NOT NULL AUTO_INCREMENT,
+  name varchar(200)  NOT NULL DEFAULT '',
+  slug varchar(200)  NOT NULL DEFAULT '',
+  term_group bigint(10) NOT NULL DEFAULT '0',
+  PRIMARY KEY (term_id)
+);
+CREATE INDEX IDX_WP_TERMS_SLUG ON wp_terms (slug);
+CREATE INDEX IDX_WP_TERMS_NAME ON wp_terms (name);

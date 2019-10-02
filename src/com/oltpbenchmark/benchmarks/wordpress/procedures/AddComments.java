@@ -5,9 +5,10 @@ import com.oltpbenchmark.api.SQLStmt;
 import com.oltpbenchmark.benchmarks.wordpress.WordpressConstants;
 import com.oltpbenchmark.benchmarks.wordpress.data.NameHistogram;
 import com.oltpbenchmark.benchmarks.wordpress.util.WordpressUtil;
-import com.oltpbenchmark.util.RandomDistribution.FlatHistogram;
+import com.oltpbenchmark.util.RandomDistribution;
 import com.oltpbenchmark.util.TextGenerator;
 import com.oltpbenchmark.util.TimeUtil;
+import org.apache.log4j.Logger;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,6 +16,9 @@ import java.sql.SQLException;
 import java.util.Random;
 
 public class AddComments extends Procedure {
+
+    private static final Logger LOG = Logger.getLogger(AddComments.class);
+
 
     public SQLStmt addComments = new SQLStmt(
         "INSERT INTO " + WordpressConstants.TABLENAME_WP_COMMENTS  +
@@ -32,10 +36,11 @@ public class AddComments extends Procedure {
       "UPDATE " + WordpressConstants.TABLENAME_WP_POSTS + " SET comment_count= ? WHERE ID=?"
     );
 
-    public boolean run(Connection conn,  Random rand, int post_id) throws SQLException {
+    public void run(Connection conn,  Random rand, int post_id) throws SQLException {
         PreparedStatement stmt = this.getPreparedStatement(conn, addComments);
+
         NameHistogram name_h = new NameHistogram();
-        FlatHistogram<Integer> name_len_rng = new FlatHistogram<>(rand, name_h);
+        RandomDistribution.FlatHistogram<Integer> name_len_rng = new RandomDistribution.FlatHistogram<Integer>(rand, name_h);
 
         int author_len = name_len_rng.nextValue().intValue();
         String comment_author_name = TextGenerator.randomStr(rand, author_len);
@@ -65,16 +70,18 @@ public class AddComments extends Procedure {
         if (rs.next()) {
             prev_comment_count = rs.getInt(1);
         }
-        rs.close();
 
+        rs.close();
+        stmt.execute();
+        // update #num of comment for this post
         int updated = this.getPreparedStatement(conn, updateCommentsCount, ++prev_comment_count,
                 post_id ).executeUpdate();
+
         if (updated != 1) {
             String msg = String.format("Failed to update comment count for post #%d ", post_id, updated);
 
             throw new SQLException(msg);
         }
-        return (stmt.execute());
     }
 
 }

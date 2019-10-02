@@ -4,6 +4,7 @@ import com.oltpbenchmark.util.Histogram;
 
 public class NameHistogram extends Histogram<Integer> {
 
+
     {
         this.put(1, 2);
         this.put(2, 12);
