@@ -8,6 +8,7 @@ public class GetHomePages extends Procedure {
 
     /**
      * Assume Blog's home page display latest post with post_title, post_content, and author
+     * order by post ID as home page always display latest posts (not latest modified post)
      */
 
     public void run (Connection conn) throws SQLException {

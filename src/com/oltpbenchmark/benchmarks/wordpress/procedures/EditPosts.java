@@ -22,8 +22,7 @@ public class EditPosts extends Procedure {
 
     public SQLStmt getOldPostContent = new SQLStmt(
        "SELECT  `post_content` " +
-            "   FROM "
-               + WordpressConstants.TABLENAME_WP_POSTS  +" WHERE ID=?"
+            "   FROM " + WordpressConstants.TABLENAME_WP_POSTS  +" WHERE ID=?"
     );
 
     public boolean run(Connection conn, int post_id, Random rand, String date) throws SQLException {
@@ -37,7 +36,7 @@ public class EditPosts extends Procedure {
                 oldText = rs.getString(1);
                 char[] newPostContent = TextGenerator.permuteText(rand, oldText.toCharArray());
                 String newText = new String(newPostContent);
-                int parameterIndex = 1, rsColumn = 1;
+                int parameterIndex = 1;
                 stmt.setString(parameterIndex++, "EDIT: "+ newText);
                 stmt.setString(parameterIndex++, date);
                 stmt.setString(parameterIndex++, date);

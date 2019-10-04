@@ -43,8 +43,6 @@ public class WordpressConstants {
     //Status constants
     public static final int USER_STATUS = 0;
     public static final String PUBLISHED_STATUS = "publish";
-    public static final String INHERIT_STATUS = "inherit";
-    public static final String REVISION_STATUS = "revision";
     public static final String OPEN = "open";
-    public static final String CLOSE = "closed";
+
 }

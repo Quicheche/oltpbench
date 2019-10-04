@@ -223,7 +223,7 @@ public class WordpressLoader extends Loader<WordpressBenchmark> {
             userInsert.setString(parameterIndex++, login_name);                            //display_name
             userInsert.addBatch();
 
-//
+//            //load user meta
 //            int s = 0, param = 1;
 //            int meta_id = i==1 ? 1:(i-1)*WordpressConstants.USER_META_KEY.size() + 1;
 //            while (s < WordpressConstants.USER_META_KEY.size()) {
@@ -236,7 +236,6 @@ public class WordpressLoader extends Loader<WordpressBenchmark> {
 //                s++;
 //                param = 1;
 //            }
-
 
             batchSize++;
             total++;

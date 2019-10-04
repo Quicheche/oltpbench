@@ -21,37 +21,33 @@ public class ReadPostByCategory extends Procedure {
 
 
     public void run(Connection conn, int term_id) throws SQLException {
-        double before = System.currentTimeMillis();
 
         PreparedStatement st = conn.prepareStatement("select p.ID, p.post_title,p.post_content, " +
                 "wu.display_name from wp_term_relationships w  " +
                 "left join wp_posts p on p.ID = w.object_id " +
                 "left join wp_users wu on p.post_author = wu.ID " +
                 "where w.term_taxonomy_id =" + term_id +
-                "   LIMIT 20");
+                "    LIMIT 20");
 
 
-        st.executeQuery();
+       ResultSet rs = st.executeQuery();
 
-        double after = System.currentTimeMillis();
-        LOG.info("time for running : " + (after - before));
-//
-//        List<Integer> post = new ArrayList<>();
-//        if (rs.next()) {
-//            while (rs.next()) {
-//                int post_id = rs.getInt(1);
-//                post.add(post_id);
-//            }
-//        }
-//        rs.close();
-//        if (post.size() > 0) {
-//            for (int i = 0; i < post.size(); i++) {
-//                st = this.getPreparedStatement(conn, getPostMeta, post.get(i));
-//                rs = st.executeQuery();
-//                rs.close();
-//            }
-//        }
- //       rs.close();
+        List<Integer> post = new ArrayList<>();
+        if (rs.next()) {
+            while (rs.next()) {
+                int post_id = rs.getInt(1);
+                post.add(post_id);
+            }
+        }
+        rs.close();
+        if (post.size() > 0) {
+            for (int i = 0; i < post.size(); i++) {
+                st = this.getPreparedStatement(conn, getPostMeta, post.get(i));
+                rs = st.executeQuery();
+                rs.close();
+            }
+        }
+       rs.close();
     }
 
 }
