@@ -20,11 +20,11 @@ public class WordpressConstants {
 
     public static final int NUM_COMMENT = 100;
 
-    public static final int NUM_POSTS = 20000;
+    public static final int NUM_POSTS = 15000;
 
     public static final int PASS_LENGTH = 32;
 
-    public static final int NUM_TERMS = 10;
+    public static final int NUM_TERMS = 100;
 
 
     //user meta_key

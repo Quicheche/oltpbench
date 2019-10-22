@@ -5,23 +5,22 @@
     <dbtype>mysql</dbtype>
     <driver>com.mysql.jdbc.Driver</driver>
     <DBUrl>jdbc:mysql://localhost:3306/wordpress?useSSL=false</DBUrl>
-    <!-- Replace with your local Mysql access info-->
     <username>root</username>
     <password></password>
-    <isolation>TRANSACTION_SERIALIZABLE</isolation>
+    <isolation>TRANSACTION_READ_COMMITTED</isolation>
     <uploadCode></uploadCode>
     <uploadUrl></uploadUrl>
 
 
-    <scalefactor>2</scalefactor>
+    <scalefactor>35</scalefactor>
 
     <!-- The workload -->
-    <terminals>1</terminals>
+    <terminals>25</terminals>
     <works>
         <work>
-            <time>1</time>
+            <time>300</time>
             <rate>10000</rate>
-            <weights>45, 45, 4, 2, 4</weights>
+            <weights>35,25,25,5,5,5</weights>
         </work>
     </works>
 
@@ -30,10 +29,10 @@
             <name>GetHomePages</name>
         </transactiontype>
         <transactiontype>
-            <name>ReadPosts</name>
+            <name>ReadPostByCategory</name>
         </transactiontype>
         <transactiontype>
-            <name>AddNewPost</name>
+            <name>ReadPosts</name>
         </transactiontype>
         <transactiontype>
             <name>AddComments</name>
@@ -41,7 +40,9 @@
         <transactiontype>
             <name>EditPosts</name>
         </transactiontype>
-
+        <transactiontype>
+            <name>AddNewPost</name>
+        </transactiontype>
     </transactiontypes>
 
 </parameters>

@@ -19,5 +19,6 @@ public class GetHomePages extends Procedure {
                  "order by p.ID desc limit 20");
 
         st.executeQuery();
+        st.close();
     }
 }

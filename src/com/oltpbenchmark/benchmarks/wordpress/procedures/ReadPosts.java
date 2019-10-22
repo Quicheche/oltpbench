@@ -12,22 +12,12 @@ public class ReadPosts extends Procedure {
 
 
 
-    public SQLStmt readPostContent = new SQLStmt(
-            "select * from  " + WordpressConstants.TABLENAME_WP_POSTS
-                    + " where ID=?"
-    );
-
     public SQLStmt readComments = new SQLStmt(
             "select * from  "
                     + WordpressConstants.TABLENAME_WP_COMMENTS
                     + " where comment_post_ID=? limit 10"
     );
 
-
-    public SQLStmt readPostTaxonomy = new SQLStmt(
-            "select w.taxonomy from wp_term_taxonomy w where w.term_taxonomy_id =" +
-                    "(select term_taxonomy_id from wp_term_relationships where object_id =?) "
-    );
 
     public SQLStmt readPostMeta = new SQLStmt(
             "select * from wp_postmeta where post_id=?"
@@ -60,15 +50,12 @@ public class ReadPosts extends Procedure {
             st.setInt(1, post_ID);
             st.executeQuery();
         }
-//        // get post category
-//        st = this.getPreparedStatement(conn, readPostTaxonomy);
-//        st.setInt(1, post_ID);
-//        st.executeQuery();
-//
+
         //read post meta
         st = this.getPreparedStatement(conn, readPostMeta);
         st.setInt(1, post_ID);
         st.executeQuery();
+        st.close();
         return true;
     }
 }
