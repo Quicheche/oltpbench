@@ -59,6 +59,7 @@ CREATE TABLE wp_posts (
 CREATE INDEX IDX_WP_POSTNAME ON wp_posts (post_name);
 CREATE INDEX IDX_WP_TYPE_STATUS_DATE ON wp_posts (post_type, post_status, post_date, ID);
 CREATE INDEX IDX_WP_POSTAUTHOR ON wp_posts (post_author);
+CREATE INDEX IDX_WP_PARENT ON wp_posts (post_parent);
 
 DROP TABLE IF EXISTS wp_comments;
 CREATE TABLE wp_comments (

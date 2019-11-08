@@ -29,9 +29,9 @@ public class AddComments extends Procedure {
     );
 
     public SQLStmt getCommentsCount = new SQLStmt(
-      "SELECT comment_count FROM " + WordpressConstants.TABLENAME_WP_POSTS + " WHERE ID=?"
+      "SELECT COUNT(*) FROM wp_comments WHERE comment_post_ID =? AND comment_approved = '1'"
     );
-
+    
     public SQLStmt updateCommentsCount = new SQLStmt(
       "UPDATE " + WordpressConstants.TABLENAME_WP_POSTS + " SET comment_count= ? WHERE ID=?"
     );

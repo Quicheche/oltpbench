@@ -142,7 +142,7 @@ public abstract class BenchmarkModule {
     protected abstract Loader<? extends BenchmarkModule> makeLoaderImpl() throws SQLException;
 
     /**
-     * @param txns
+     * @param
      * @return
      */
     protected abstract Package getProcedurePackageImpl();
@@ -169,7 +169,7 @@ public abstract class BenchmarkModule {
     /**
      * Return the URL handle to the DDL used to load the benchmark's database
      * schema.
-     * @param conn 
+     * @param
      * @throws SQLException 
      */
     public URL getDatabaseDDL(DatabaseType db_type) {
@@ -297,6 +297,7 @@ public abstract class BenchmarkModule {
             loader = this.makeLoaderImpl();
             if (loader != null) {
                 List<? extends LoaderThread> loaderThreads = loader.createLoaderThreads();
+                LOG.info("loaderThreads: " + loaderThreads.size());
                 if (loaderThreads != null) {
                     int maxConcurrent = workConf.getLoaderThreads();
                     assert (maxConcurrent > 0);
@@ -410,8 +411,8 @@ public abstract class BenchmarkModule {
 
     /**
      * Return a mapping from TransactionTypes to Procedure invocations
-     * @param txns
-     * @param pkg
+     * @param
+     * @param
      * @return
      */
     public Map<TransactionType, Procedure> getProcedures() {

@@ -28,7 +28,6 @@ public class EditPosts extends Procedure {
     public boolean run(Connection conn, int post_id, Random rand, String date) throws SQLException {
 
         String oldText = "";
-        LOG.info("edit postID: " + post_id);
         ResultSet rs = this.getPreparedStatement(conn, getOldPostContent, post_id).executeQuery();
         PreparedStatement stmt = this.getPreparedStatement(conn, insertUpdatePost);
         try {

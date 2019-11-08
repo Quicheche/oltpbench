@@ -5,29 +5,36 @@ import com.oltpbenchmark.api.SQLStmt;
 import com.oltpbenchmark.benchmarks.wordpress.WordpressConstants;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class ReadPosts extends Procedure {
 
 
 
-    public SQLStmt readComments = new SQLStmt(
-            "select * from  "
-                    + WordpressConstants.TABLENAME_WP_COMMENTS
-                    + " where comment_post_ID=? limit 10"
+    public SQLStmt readPostContent = new SQLStmt(
+            "select * from  " + WordpressConstants.TABLENAME_WP_POSTS
+                    + " where ID=?"
     );
 
+    public SQLStmt readComments = new SQLStmt(
+            "SELECT SQL_CALC_FOUND_ROWS wp_comments.comment_ID FROM wp_comments " +
+                    "WHERE ( comment_approved = '1' ) AND comment_post_ID =? " +
+                    "AND comment_parent = 0 ORDER BY wp_comments.comment_date_gmt ASC, wp_comments.comment_ID ASC"
+    );
+
+
+    public SQLStmt readPostTaxonomy = new SQLStmt(
+            "SELECT t.*, tt.*, tr.object_id FROM wp_terms AS t INNER JOIN wp_term_taxonomy AS tt " +
+                    "ON t.term_id = tt.term_id INNER JOIN wp_term_relationships AS tr " +
+                    "ON tr.term_taxonomy_id = tt.term_taxonomy_id WHERE  " +
+                    " tr.object_id IN (?) ORDER BY t.name ASC "
+    );
 
     public SQLStmt readPostMeta = new SQLStmt(
-            "select * from wp_postmeta where post_id=?"
+            "SELECT post_id, meta_key, meta_value FROM wp_postmeta WHERE post_id IN (?) ORDER BY meta_id ASC"
     );
 
-    // join wp_posts with category table
-    public SQLStmt readPostAndTaxonomy = new SQLStmt("select p.*, w.taxonomy from wp_posts p \n" +
-            "left join wp_term_relationships u on u.object_id = p.ID \n" +
-            "left join wp_term_taxonomy w on w.term_taxonomy_id = u.term_taxonomy_id \n" +
-            "where p.ID =?");
+
 
     /**
      * Read using join
@@ -37,24 +44,28 @@ public class ReadPosts extends Procedure {
      * @throws SQLException
      */
     public boolean run(Connection conn, int post_ID) throws SQLException {
-        PreparedStatement st = this.getPreparedStatement(conn, readPostAndTaxonomy);
-        st.setInt(1, post_ID);
-        ResultSet rs = st.executeQuery();
-        // read post comment count
-        int comment_count = rs.getInt(23);
-        rs.close();
 
-        //read comments
-        if (comment_count > 0) {
-            st = this.getPreparedStatement(conn, readComments);
-            st.setInt(1, post_ID);
-            st.executeQuery();
-        }
+        //Post contents
+        PreparedStatement st = this.getPreparedStatement(conn, readPostContent);
+        st.setInt(1, post_ID);
+        st.execute();
 
         //read post meta
         st = this.getPreparedStatement(conn, readPostMeta);
         st.setInt(1, post_ID);
-        st.executeQuery();
+        st.execute();
+
+
+        //comments
+        st = this.getPreparedStatement(conn, readComments);
+        st.setInt(1, post_ID);
+        st.execute();
+
+        //terms
+        st = this.getPreparedStatement(conn, readPostTaxonomy);
+        st.setInt(1, post_ID);
+        st.execute();
+
         st.close();
         return true;
     }

@@ -203,7 +203,7 @@ public class ThreadBench implements Thread.UncaughtExceptionHandler {
     private int finalizeWorkers(ArrayList<Thread> workerThreads) throws InterruptedException {
         assert testState.getState() == State.DONE || testState.getState() == State.EXIT;
         int requests = 0;
-
+        LOG.info("finalizedWorkers:  workerThreads=" + workerThreads.size());
         WatchDogThread watchdog = new WatchDogThread();
         watchdog.start();
 
@@ -217,7 +217,7 @@ public class ThreadBench implements Thread.UncaughtExceptionHandler {
             // FIXME not sure this is the best solution... ensure we don't hang
             // forever, however we might ignore 
             // problems
-            t.join(60000); // wait for 60second for threads
+          //  t.join(60000); // wait for 60second for threads
                                               // to terminate... hands otherwise
 
             /*
@@ -226,11 +226,12 @@ public class ThreadBench implements Thread.UncaughtExceptionHandler {
              * workerThreads.get(i).kill(); try { workerThreads.get(i).join(); }
              * catch (InterruptedException e) { } }
              */
-
+          //  LOG.info("i: " + i + "  requests: " + w.getRequests());
             requests += w.getRequests();
             w.tearDown(false);
         }
         testState = null;
+        LOG.info("finalize workers: " + requests);
         return requests;
     }
 
@@ -291,6 +292,7 @@ public class ThreadBench implements Thread.UncaughtExceptionHandler {
                     for (Worker<?> w : workers) {
                         measuredRequests += w.getAndResetIntervalRequests();
                     }
+                    LOG.info("monitor: " + workers.size() + "  measuredRequests:" + measuredRequests);
                 }
                 double seconds = this.intervalMonitor / 1000d;
                 double tps = (double) measuredRequests / seconds;
@@ -338,7 +340,7 @@ public class ThreadBench implements Thread.UncaughtExceptionHandler {
         for (WorkloadState workState : this.workStates) {
             workState.switchToNextPhase();
             phase = workState.getCurrentPhase();
-            LOG.info(phase.currentPhaseString());
+            LOG.info("currentPhase: " + phase.currentPhaseString());
             if (phase.rate < lowestRate) {
                 lowestRate = phase.rate;
             }
@@ -444,7 +446,7 @@ public class ThreadBench implements Thread.UncaughtExceptionHandler {
                                 lastEntry = true;
                                 testState.startCoolDown();
                                 measureEnd = now;
-                                LOG.info(StringUtil.bold("TERMINATE") + " :: Waiting for all terminals to finish ..");
+                                LOG.info(StringUtil.bold("TERMINATE") + "  ***Waiting for all terminals to finish ..");
                             } else if (phase != null) {
                                 phase.resetSerial();
                                 LOG.info(phase.currentPhaseString());
@@ -489,7 +491,7 @@ public class ThreadBench implements Thread.UncaughtExceptionHandler {
                     interruptWorkers();
                 }
                 start = now;
-                LOG.info(StringUtil.bold("MEASURE") + " :: Warmup complete, starting measurements.");
+                LOG.info(StringUtil.bold("MEASURE") + " ::: Warmup complete, starting measurements.");
                 // measureEnd = measureStart + measureSeconds * 1000000000L;
 
                 // For serial executions, we want to do every query exactly
@@ -510,7 +512,7 @@ public class ThreadBench implements Thread.UncaughtExceptionHandler {
 
         try {
             int requests = finalizeWorkers(this.workerThreads);
-
+            LOG.info("finalizeWorkers requests: " + requests);
             // Combine all the latencies together in the most disgusting way
             // possible: sorting!
             for (Worker<?> w : workers) {

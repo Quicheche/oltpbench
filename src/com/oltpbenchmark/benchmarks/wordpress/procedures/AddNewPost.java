@@ -80,7 +80,7 @@ public class AddNewPost extends Procedure {
         stmt.setInt(parameterIndex++, 0);                                       //post_parent
         stmt.setString(parameterIndex++, WordpressUtil.generateRandomURL(rand));   //guid
         stmt.setInt(parameterIndex++, 0);                                       //menu_order
-        stmt.setString(parameterIndex++, WordpressUtil.getRandomPostType(rand));   //post_type
+        stmt.setString(parameterIndex++, "post");   //post_type
         stmt.setString(parameterIndex++, "");                                   //post_mime_type
         stmt.setInt(parameterIndex++, 0);                                       //comment_count
 

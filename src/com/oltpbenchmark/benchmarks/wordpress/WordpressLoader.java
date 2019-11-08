@@ -139,19 +139,18 @@ public class WordpressLoader extends Loader<WordpressBenchmark> {
         for(int i = 1; i <= this.num_terms; i++) {
             int parameterIndex = 1;
 
-            String taxonomy = TextGenerator.randomStr(rand, cat_name_len_rng.nextValue().intValue());
             String term_name = TextGenerator.randomStr(rand, cat_name_len_rng.nextValue().intValue());
 
             termsInsert.setInt(parameterIndex++, i);
-            termsInsert.setString(parameterIndex++, term_name);  //term
-            termsInsert.setString(parameterIndex++, term_name); // slug
+            termsInsert.setString(parameterIndex++, term_name);   //term
+            termsInsert.setString(parameterIndex++, term_name);  // slug
             termsInsert.setInt(parameterIndex++, 0);          // term_group
             termsInsert.addBatch();
 
             parameterIndex = 1;
             taxonomyInsert.setInt(parameterIndex++, i);
             taxonomyInsert.setInt(parameterIndex++, i);
-            taxonomyInsert.setString(parameterIndex++, taxonomy);
+            taxonomyInsert.setString(parameterIndex++, "category");   //taxonomy should be category
             taxonomyInsert.setString(parameterIndex++, "");
             taxonomyInsert.setInt(parameterIndex++, 0);
             taxonomyInsert.setInt(parameterIndex++, 0);
@@ -222,20 +221,6 @@ public class WordpressLoader extends Loader<WordpressBenchmark> {
             userInsert.setInt(parameterIndex++, WordpressConstants.USER_STATUS);           //user_status
             userInsert.setString(parameterIndex++, login_name);                            //display_name
             userInsert.addBatch();
-
-//            //load user meta
-//            int s = 0, param = 1;
-//            int meta_id = i==1 ? 1:(i-1)*WordpressConstants.USER_META_KEY.size() + 1;
-//            while (s < WordpressConstants.USER_META_KEY.size()) {
-//                userMetaInsert.setInt(param++, meta_id++);
-//                userMetaInsert.setInt(param++, i);   //user_id
-//                userMetaInsert.setString(param++, WordpressConstants.USER_META_KEY.get(s));
-//                userMetaInsert.setString(param++, TextGenerator.randomStr(rand, WordpressConstants.PASS_LENGTH));
-//
-//                userMetaInsert.addBatch();
-//                s++;
-//                param = 1;
-//            }
 
             batchSize++;
             total++;
@@ -314,7 +299,7 @@ public class WordpressLoader extends Loader<WordpressBenchmark> {
             postInsert.setInt(parameterIndex++, 0);                                       //post_parent
             postInsert.setString(parameterIndex++, WordpressUtil.generateRandomURL(rand));   //guid
             postInsert.setInt(parameterIndex++, 0);                                       //menu_order
-            postInsert.setString(parameterIndex++, WordpressUtil.getRandomPostType(rand));   //post_type
+            postInsert.setString(parameterIndex++, "post");                               //post_type
             postInsert.setString(parameterIndex++, "");                                   //post_mime_type
             postInsert.setInt(parameterIndex++, commentCount);                                //comment_count
             postInsert.addBatch();

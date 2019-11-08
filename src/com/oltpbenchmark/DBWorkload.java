@@ -826,7 +826,7 @@ public class DBWorkload {
         for (BenchmarkModule bench : benchList) {
             LOG.info("Creating " + bench.getWorkloadConfiguration().getTerminals() + " virtual terminals...");
             workers.addAll(bench.makeWorkers(verbose));
-            // LOG.info("done.");
+             LOG.info("workers size: " + workers.size());
             
             int num_phases = bench.getWorkloadConfiguration().getNumberOfPhases();
             LOG.info(String.format("Launching the %s Benchmark with %s Phase%s...",

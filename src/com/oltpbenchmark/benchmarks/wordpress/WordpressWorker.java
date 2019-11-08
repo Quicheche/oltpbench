@@ -6,12 +6,10 @@ import com.oltpbenchmark.benchmarks.wordpress.procedures.*;
 import com.oltpbenchmark.types.TransactionStatus;
 import com.oltpbenchmark.util.TimeUtil;
 import com.oltpbenchmark.api.Procedure.UserAbortException;
-
 import java.sql.SQLException;
-
 import com.oltpbenchmark.util.RandomDistribution.Flat;
 import com.oltpbenchmark.util.RandomDistribution.Zipf;
-import org.apache.log4j.Logger;
+
 
 
 public class WordpressWorker extends Worker<WordpressBenchmark> {
@@ -20,7 +18,6 @@ public class WordpressWorker extends Worker<WordpressBenchmark> {
     private final int num_posts;
 
     private final int num_terms;
-    private static final Logger LOG = Logger.getLogger(WordpressWorker.class);
 
     public WordpressWorker(WordpressBenchmark benchmarkModule, int id) {
         super(benchmarkModule, id);
@@ -45,12 +42,15 @@ public class WordpressWorker extends Worker<WordpressBenchmark> {
 
         int rand_term_id = this.rng().nextInt(this.num_terms) + 1;
         try {
-            if (txnType.getProcedureClass().equals(GetHomePages.class)) {
-                getHomePage();
+            if (txnType.getProcedureClass().equals(test.class)) {
+                //getHomePage();
+                test();
             } else if (txnType.getProcedureClass().equals(ReadPosts.class)) {
                 readPosts(postId);
             } else if (txnType.getProcedureClass().equals(ReadPostByCategory.class)) {
                 readPostsPerCategory(rand_term_id);
+            } else if (txnType.getProcedureClass().equals(ReadPostsByDate.class)) {
+                readPostsByDate();
             } else if (txnType.getProcedureClass().equals(AddNewPost.class)) {
                 addNewPosts(userId);
             } else if (txnType.getProcedureClass().equals(AddComments.class)) {
@@ -71,6 +71,12 @@ public class WordpressWorker extends Worker<WordpressBenchmark> {
         proc.run(conn);
     }
 
+    public void test() throws SQLException {
+        test proc = this.getProcedure(test.class);
+        assert (proc != null);
+        proc.run(conn);
+    }
+
     public void readPosts(int post_id) throws SQLException {
         ReadPosts proc = this.getProcedure(ReadPosts.class);
         assert (proc != null);
@@ -81,6 +87,12 @@ public class WordpressWorker extends Worker<WordpressBenchmark> {
         ReadPostByCategory proc = this.getProcedure(ReadPostByCategory.class);
         assert (proc != null);
         proc.run(conn, term_id);
+    }
+
+    public void readPostsByDate() throws SQLException {
+        ReadPostsByDate proc = this.getProcedure(ReadPostsByDate.class);
+        assert(proc != null);
+        proc.run(conn);
     }
 
     public void addNewPosts(int uid) throws SQLException {
