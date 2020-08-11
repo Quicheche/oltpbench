@@ -1,14 +1,15 @@
 package com.oltpbenchmark.benchmarks.wordpress;
 
+import com.oltpbenchmark.api.Procedure.UserAbortException;
 import com.oltpbenchmark.api.TransactionType;
 import com.oltpbenchmark.api.Worker;
 import com.oltpbenchmark.benchmarks.wordpress.procedures.*;
 import com.oltpbenchmark.types.TransactionStatus;
-import com.oltpbenchmark.util.TimeUtil;
-import com.oltpbenchmark.api.Procedure.UserAbortException;
-import java.sql.SQLException;
 import com.oltpbenchmark.util.RandomDistribution.Flat;
 import com.oltpbenchmark.util.RandomDistribution.Zipf;
+import com.oltpbenchmark.util.TimeUtil;
+
+import java.sql.SQLException;
 
 
 
@@ -42,15 +43,12 @@ public class WordpressWorker extends Worker<WordpressBenchmark> {
 
         int rand_term_id = this.rng().nextInt(this.num_terms) + 1;
         try {
-            if (txnType.getProcedureClass().equals(test.class)) {
-                //getHomePage();
-                test();
+            if (txnType.getProcedureClass().equals(GetHomePages.class)) {
+                getHomePage();
             } else if (txnType.getProcedureClass().equals(ReadPosts.class)) {
                 readPosts(postId);
             } else if (txnType.getProcedureClass().equals(ReadPostByCategory.class)) {
                 readPostsPerCategory(rand_term_id);
-            } else if (txnType.getProcedureClass().equals(ReadPostsByDate.class)) {
-                readPostsByDate();
             } else if (txnType.getProcedureClass().equals(AddNewPost.class)) {
                 addNewPosts(userId);
             } else if (txnType.getProcedureClass().equals(AddComments.class)) {
